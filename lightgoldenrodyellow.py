@@ -8,7 +8,7 @@ import ttkbootstrap as ttk  # Using ttkbootstrap for theming
 
 # Configuration and constants
 CONFIG_FILE = "config.json"
-ALLOWED_EXTENSIONS = ('.html', '.css', '.js', '.php', '.py')
+ALLOWED_EXTENSIONS = ('.html', '.css', '.js', '.php', '.py','.java')
 EXCLUDED_DIRS = {'.git', 'node_modules'}
 
 def load_config():
@@ -160,45 +160,51 @@ def generate_combined_report():
     if not selected_folder:
         messagebox.showerror("Error", "No project folder selected.")
         return
-    if not selected_db:
-        messagebox.showerror("Error", "No SQLite database selected.")
-        return
+
     code_report = generate_code_report(selected_folder)
-    db_report = analyze_single_database(selected_db)
-    
+
     combined_report_lines = []
     combined_report_lines.append("===== CODE ANALYSIS REPORT =====")
     combined_report_lines.append(code_report)
-    combined_report_lines.append("\n===== DATABASE ANALYSIS REPORT =====")
-    combined_report_lines.append(db_report)
-    
+
+    if selected_db:
+        db_report = analyze_single_database(selected_db)
+        combined_report_lines.append("\n===== DATABASE ANALYSIS REPORT =====")
+        combined_report_lines.append(db_report)
+    else:
+        combined_report_lines.append("\n===== DATABASE ANALYSIS REPORT =====")
+        combined_report_lines.append("No SQLite database selected.")
+
     combined_report = "\n".join(combined_report_lines)
-    
+
     # Display the combined report in a new window with a scrollable Text widget.
     report_window = tk.Toplevel(root)
     report_window.title("Combined Analysis Report")
-    
+
     text_frame = ttk.Frame(report_window)
     text_frame.pack(fill="both", expand=True, padx=10, pady=10)
-    
+
     text_widget = tk.Text(text_frame, wrap="none")
     text_widget.insert("1.0", combined_report)
     text_widget.pack(side=tk.LEFT, fill="both", expand=True)
-    
+
     scrollbar = ttk.Scrollbar(text_frame, orient="vertical", command=text_widget.yview)
     scrollbar.pack(side=tk.RIGHT, fill="y")
     text_widget.config(yscrollcommand=scrollbar.set)
-    
+
     btn_frame = ttk.Frame(report_window)
     btn_frame.pack(pady=5)
-    
+
     save_button = ttk.Button(btn_frame, text="Save Report",
                              command=lambda: save_report(combined_report, selected_folder))
     save_button.pack(side=tk.LEFT, padx=5)
-    
+
     copy_button = ttk.Button(btn_frame, text="Copy Report",
                              command=lambda: copy_report(combined_report))
     copy_button.pack(side=tk.LEFT, padx=5)
+
+
+
 
 def save_report(report_text, initial_dir):
     """
@@ -224,11 +230,22 @@ def copy_report(report_text):
     root.clipboard_append(report_text)
     messagebox.showinfo("Clipboard", "Report copied to clipboard!")
 
+
+
 # Set up the main window using ttkbootstrap
 style = ttk.Style('flatly')
 root = style.master
 root.title("Project and Database Analyzer")
-root.geometry("400x250")
+root.geometry("400x350")
+
+# Load and display the image
+image_path = "lightgoldenrodyellow.png"
+try:
+    img = tk.PhotoImage(file=image_path)
+    image_label = ttk.Label(root, image=img)
+    image_label.pack(pady=10)
+except Exception as e:
+    print(f"Error loading image: {e}")
 
 # Main button layout
 main_frame = ttk.Frame(root)
@@ -237,7 +254,8 @@ main_frame.pack(expand=True, padx=20, pady=20)
 btn_select_folder = ttk.Button(main_frame, text="Select Project Folder", command=select_project_folder)
 btn_select_folder.pack(pady=5, fill='x')
 
-btn_select_db = ttk.Button(main_frame, text="Select SQLite Database", command=select_database_file)
+# Update the button text to indicate that database selection is optional
+btn_select_db = ttk.Button(main_frame, text="Select SQLite Database (Optional)", command=select_database_file)
 btn_select_db.pack(pady=5, fill='x')
 
 btn_generate_report = ttk.Button(main_frame, text="Generate Combined Report", command=generate_combined_report)
