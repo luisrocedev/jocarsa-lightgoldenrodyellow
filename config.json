@@ -1,4 +1,10 @@
 {
-    "last_code_folder": "C:/xampp/htdocs/jocarsa-olivedrab",
-    "last_db_folder": "/var/www/html/databases"
+    "last_code_folder": "/var/www/html/jocarsa-rosybrown",
+    "last_db_folder": "/var/www/html/databases",
+    "mysql": {
+        "server": "aaa",
+        "user": "aaa",
+        "password": "aaa",
+        "database": "aaa"
+    }
 }
