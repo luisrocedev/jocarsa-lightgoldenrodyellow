@@ -1,4 +1,5 @@
 {
+<<<<<<< Updated upstream
     "last_code_folder": "/var/www/html/jocarsa-rosybrown",
     "last_db_folder": "/var/www/html/databases",
     "mysql": {
@@ -7,4 +8,8 @@
         "password": "aaa",
         "database": "aaa"
     }
+=======
+    "last_code_folder": "/Applications/MAMP/htdocs/GitHub/Portafolio",
+    "last_db_folder": "/var/www/html/databases"
+>>>>>>> Stashed changes
 }
